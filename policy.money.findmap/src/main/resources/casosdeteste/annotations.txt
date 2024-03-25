@@ -1,0 +1,36 @@
+- Ler linhas do texto -> instancia uma lista com todas as linhas ->
+cada linha é uma string quebrada pelo final da linha.
+
+- Precisa-se alinhar o caminho inteiro em uma única string
+- E com isso será possível analizar a lista de caracteres na busca pelos números.
+
+- Desafio será manter o mesmo sentido ao ordenar as linhas lidas do arquivo
+- Depois disso podemos usar a api streams para ler a sequencia gerada e ordenada conforme
+o caminho proposto no teste em busca dos numeros para gerar o somatório ao final.
+
+- Questão, como gerar a sequencia do caminho ordenada ?
+ - primeiro precisamos identificar o padrao de caracteres do arquivo
+ - pois sempre inicia o caminho com o char "-"
+ - então essa seria o primeiro objeto do caminho, e isso devera ser adicionado em uma nova lista
+ cada novo caracter dessa sequencia devera ser adicionado nesta nova lista
+ - porém cada linha possui varios pedacos do caminho.
+ - o desafio sera manter a ordem de cada sequencia, ou seja o algoritmo precisa varrer o texto
+ diversas vezes para encontrar as sequencias.
+ - isso sera lento demais, a forma mais rapida seria criar um objeto chamado mapa
+ e com esse mapa ir adicionando a cada novo caracter lido do input as direcoes.
+
+ - Descricao algoritmo
+    - Quando encontrar os sinalizadores na linha como a barra e a contrabarra ou \ / | sabe se que
+    devemos pegar a proxima linha para analisar, ou seja, sempre vamos iterar a lista inteira.
+    - Com isso conseguimos ir extraindo da lista de linhas o caminho, e dessa maneira,
+    conseguiremos montar uma string inteira com toda a sequencia do caminho do arquivo de teste.
+    - e apos isso podemos ler essa fita de caracteres e extrair as notas encontradas no caminho.
+    - para depois gerar o somatorio de cada caso de teste.
+    - condicionais:
+        - se for "-" segue lendo e adicionando no mapa esses itens na mesma linha,
+        - se for numero adiciona na lista de bills
+        - se for um "|"
+            - passa para proximo index da lista e repete a leitura, pode ser recursivo.
+            - se encontrar outro "|" primeiro faz a mesma coisa.
+        - se for um "\" verifica proximo char
+        - se for um "/" verifica prozimo char
