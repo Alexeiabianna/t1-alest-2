@@ -1,18 +1,17 @@
 package com.alexei.abianna;
 
-import com.alexei.abianna.domain.MapPath;
-import com.alexei.abianna.processor.ProcessorMapReaded;
+import com.alexei.abianna.domain.PathMap;
+import com.alexei.abianna.processor.ProcessorMap;
 import com.alexei.abianna.reader.ReaderMapUtils;
 
 public class Main {
     public static void main(String[] args) {
-//        var text = ReaderMapUtils.readTextFile("src/main/resources/casosdeteste/casoC01.txt");
-        var text50 = ReaderMapUtils.readTextFile("src/main/resources/casosdeteste/casoC50.txt");
+        var text = ReaderMapUtils.getList("src/main/resources/casosdeteste/casoC50.txt");
 
-        final MapPath mapPath = new MapPath();
-        final ProcessorMapReaded processor = new ProcessorMapReaded();
-        processor.orderFileLines(text50, processor.getSizeFile(text50));
+        final PathMap pathMap = new PathMap();
+        final ProcessorMap processor = new ProcessorMap();
+        processor.loadingMap(text);
 
-        System.out.println(text50);
+        System.out.println(processor.getPathGraph());
     }
 }

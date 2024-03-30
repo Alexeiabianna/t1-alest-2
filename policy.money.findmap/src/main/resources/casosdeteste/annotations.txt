@@ -34,3 +34,9 @@ o caminho proposto no teste em busca dos numeros para gerar o somatório ao fina
             - se encontrar outro "|" primeiro faz a mesma coisa.
         - se for um "\" verifica proximo char
         - se for um "/" verifica prozimo char
+
+ ---------------------
+ Se for "-" adiciona no mapa e verifica proximo char
+ Enquanto for "-" adiciona no mapa e verifica o proximo char
+ Quando for "/"
+    Pula para linha de cima e verifica novamente os caracteres "\"

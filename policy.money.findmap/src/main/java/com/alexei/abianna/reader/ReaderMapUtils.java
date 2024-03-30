@@ -8,7 +8,23 @@ import java.util.List;
 
 public final class ReaderMapUtils {
 
-    public static List<String> readTextFile(final String filePath) {
+    public static List<String[]> getList(final String filePath) {
+        final List<String[]> fileLines = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                var array = line.split("");
+                fileLines.add(array);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return fileLines;
+    }
+
+    public static String[] readText(final String filePath) {
         final List<String> fileLines = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -20,7 +36,7 @@ public final class ReaderMapUtils {
             e.printStackTrace();
         }
 
-        return fileLines;
+        return fileLines.toArray(String[]::new);
     }
 
 }
