@@ -23,20 +23,4 @@ public final class ReaderMapUtils {
 
         return fileLines;
     }
-
-    public static String[] readText(final String filePath) {
-        final List<String> fileLines = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                fileLines.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return fileLines.toArray(String[]::new);
-    }
-
 }
