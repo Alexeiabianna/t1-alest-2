@@ -1,42 +1,28 @@
-- Ler linhas do texto -> instancia uma lista com todas as linhas ->
-cada linha é uma string quebrada pelo final da linha.
+Estrutura de dados - Grafo
+---------------------------------------------------------------------------
+Estrutura está organizada assim:
+- Array de linhas, dentro de cada linha uma coluna
+ - Dentro de cada coluna um Nodo.
+- Nodo = char
+    - vizinhos = [cima, baixo, esquerda, direita]
 
-- Precisa-se alinhar o caminho inteiro em uma única string
-- E com isso será possível analizar a lista de caracteres na busca pelos números.
+Algoritmo - caminhamento em grafo
+----------------------------------------------------------------------------
+- passo 1
+Para solucionar o desafio será necessário percorrer o grafo até encontrar o início do mapa
+e isso ocorre quando encontramos na primeira coluna o char "-"
 
-- Desafio será manter o mesmo sentido ao ordenar as linhas lidas do arquivo
-- Depois disso podemos usar a api streams para ler a sequencia gerada e ordenada conforme
-o caminho proposto no teste em busca dos numeros para gerar o somatório ao final.
+- passo 2
+- olhar para a lista de vizinhos para a posição da direita.
+- enquanto encontrar o char "-" continua olhando para o vizinho da direita que está na posição 03 da lista.
+- Se encontrar um char "/" significa que devera subir a esquerda, ou seja olhar para o vizinho de cima da lista posição 01.
+- Se encontrar um char "\" significa que deverá descer a direita, ou seja olhar para o vizinho de baixo da lista posição 02.
+- Se encontrar um char "|" significa que deverá ir para cima ou para baixo o que define isso é o sentido anterior.
+    - Se o ponteiro estiver lendo uma seq de char "-" e olhando para a direita ou esquerda houver um char "|" o mesmo, deve ser ignorado.
+    - Se o ponteiro estiver acabado de ler um char "/" ou "\" então, deve-se considerar o char "|".
+        - Se o char anterior for "/" então segue para cima.
+        - Se o char anterior for "\" então segue para baixo.
+        - Se o char anterior for "|" segue o sentido em que está (cima ou baixo).
+- Se o ponteiro encontrar o char diferente, deve se checar se é número, se for deve-se adicionar ao contador de notas.
 
-- Questão, como gerar a sequencia do caminho ordenada ?
- - primeiro precisamos identificar o padrao de caracteres do arquivo
- - pois sempre inicia o caminho com o char "-"
- - então essa seria o primeiro objeto do caminho, e isso devera ser adicionado em uma nova lista
- cada novo caracter dessa sequencia devera ser adicionado nesta nova lista
- - porém cada linha possui varios pedacos do caminho.
- - o desafio sera manter a ordem de cada sequencia, ou seja o algoritmo precisa varrer o texto
- diversas vezes para encontrar as sequencias.
- - isso sera lento demais, a forma mais rapida seria criar um objeto chamado mapa
- e com esse mapa ir adicionando a cada novo caracter lido do input as direcoes.
-
- - Descricao algoritmo
-    - Quando encontrar os sinalizadores na linha como a barra e a contrabarra ou \ / | sabe se que
-    devemos pegar a proxima linha para analisar, ou seja, sempre vamos iterar a lista inteira.
-    - Com isso conseguimos ir extraindo da lista de linhas o caminho, e dessa maneira,
-    conseguiremos montar uma string inteira com toda a sequencia do caminho do arquivo de teste.
-    - e apos isso podemos ler essa fita de caracteres e extrair as notas encontradas no caminho.
-    - para depois gerar o somatorio de cada caso de teste.
-    - condicionais:
-        - se for "-" segue lendo e adicionando no mapa esses itens na mesma linha,
-        - se for numero adiciona na lista de bills
-        - se for um "|"
-            - passa para proximo index da lista e repete a leitura, pode ser recursivo.
-            - se encontrar outro "|" primeiro faz a mesma coisa.
-        - se for um "\" verifica proximo char
-        - se for um "/" verifica prozimo char
-
- ---------------------
- Se for "-" adiciona no mapa e verifica proximo char
- Enquanto for "-" adiciona no mapa e verifica o proximo char
- Quando for "/"
-    Pula para linha de cima e verifica novamente os caracteres "\"
+- Ao final da computação deve-se retornar o valor total somado das notas encontradas no mapa de acordo com o caminho correto.
