@@ -26,3 +26,7 @@ e isso ocorre quando encontramos na primeira coluna o char "-"
 - Se o ponteiro encontrar o char diferente, deve se checar se é número, se for deve-se adicionar ao contador de notas.
 
 - Ao final da computação deve-se retornar o valor total somado das notas encontradas no mapa de acordo com o caminho correto.
+- Observacao:
+    - A uma exceção a regra das posições, por exemplo:
+        - Se o nodo não possui nenhum vizinho em alguma direção (no caso da primeira e a ultima coluna, e a última linha)
+        - Deve-se considerar a posição da lista de vizinhos para a direita na posição 2 da lista;

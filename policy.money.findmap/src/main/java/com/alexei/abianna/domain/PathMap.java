@@ -5,7 +5,8 @@ import java.util.List;
 
 public class PathMap {
 
-    private List<Integer> bills = new ArrayList<>();;
+    private List<Integer> bills = new ArrayList<>();
+    private List<Character> pathMapRecorded = new ArrayList<>();
 
     public int getAmountBills() {
         return this.bills.stream().mapToInt(Integer::intValue).sum();
@@ -19,4 +20,11 @@ public class PathMap {
         this.bills.add(bill);
     }
 
+    public List<Character> getPathMapRecorded() {
+        return this.pathMapRecorded;
+    }
+
+    public void addBlockToMap(final char block) {
+        this.pathMapRecorded.add(block);
+    }
 }
