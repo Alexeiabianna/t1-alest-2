@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
+
+    private static final int UP = 0;
+    private static final int DOWN = 1;
+    private static final int LEFT = 2;
+    private static final int RIGHT = 3;
     private char value;
     private int row;
     private int col;
@@ -30,5 +35,22 @@ public class Node {
 
     public List<Node> getNeighbors() {
         return neighbors;
+    }
+
+    public Node getUpBlock() {
+        return !this.getNeighbors().isEmpty() ? this.getNeighbors().get(UP) : null;
+    }
+    public Node getDownBlock() {
+        return !this.getNeighbors().isEmpty() ? this.getNeighbors().get(DOWN) : null;
+    }
+    public Node getLeftBlock() {
+        return !this.getNeighbors().isEmpty() ? this.getNeighbors().get(LEFT) : null;
+    }
+    public Node getRightBlock() {
+        return isRightNeighborsExists() ? this.getNeighbors().get(RIGHT) : getLeftBlock();
+    }
+
+    public boolean isRightNeighborsExists() {
+        return this.getNeighbors().size() > RIGHT;
     }
 }
