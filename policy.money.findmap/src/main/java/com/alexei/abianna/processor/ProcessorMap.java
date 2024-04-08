@@ -37,7 +37,8 @@ public class ProcessorMap {
             while (isPathBlock(nextBlock.getValue())) {
                 pathMap.addBlockToMap(nextBlock.getValue());
                 var temp = nextBlock;
-                nextBlock = getNextWay(currentBlock, nextBlock);
+//                nextBlock = getNextWay(currentBlock, nextBlock);
+                nextBlock = getNext(currentBlock, nextBlock);
                 currentBlock = temp;
                 if (Objects.isNull(nextBlock)) {
                     break;
@@ -48,51 +49,176 @@ public class ProcessorMap {
         Logger.getAnonymousLogger().info("Amount bills result: " + pathMap.getAmountBills());
     }
 
+    private Node getNext(final Node current, final Node next) {
+        int currentCol = current.getCol();
+        int currentRow = current.getRow();
+
+        int nextCol = next.getCol();
+        int nextRow = next.getRow();
+
+        if (isCorner(current)) {
+            saveCorner(current);
+        }
+
+        if (currentCol == nextCol || currentRow == nextRow) {
+            int size = pathMap.getCornerList().size();
+            Node corner = size > 0 ? pathMap.getCornerList().get(size - 1) : null;
+
+            // Change directions
+            if (isHorizontal(getCharNodeValue(current)) && isRight(getCharNodeValue(next))) {
+                return next.getDownBlock();
+            }
+            if (isHorizontal(getCharNodeValue(current)) && isLeft(getCharNodeValue(next))) {
+                return next.getUpBlock();
+            }
+            if (isVertical(getCharNodeValue(current)) && isRight(getCharNodeValue(next))) {
+                return next.getRightBlock();
+            }
+            if (isVertical(getCharNodeValue(current)) && isLeft(getCharNodeValue(next))) {
+                return next.getLeftBlock();
+            }
+
+            // Go ahead
+            if (Objects.nonNull(corner)) {
+                if (isHorizontal(getCharNodeValue(next))) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getLeftBlock();
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        return next.getRightBlock();
+                    }
+                    if (isLeft(getCharNodeValue(corner))) {
+                        if (isPipe(getCharNodeValue(next))) {
+                            return next.getRightBlock();
+                        }
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        if (isPipe(getCharNodeValue(next))) {
+                            return next.getRightBlock();
+                        }
+                    }
+                }
+                if (isNumeric(getCharNodeValue(next))) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getUpBlock();
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        return next.getDownBlock();
+                    }
+                }
+                if (isVertical(getCharNodeValue(next))) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getUpBlock();
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        return next.getDownBlock();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isPipe(final String value) {
+        return PathBlocksEnum.VERTICAL_WAY.getValue().equals(value);
+    }
+
+    private boolean isCorner(Node node) {
+        return isLeft(getCharNodeValue(node)) || isRight(getCharNodeValue(node));
+    }
+
     private Node getNextWay(final Node current, final Node nextBlock) {
-        final String currentValue = String.valueOf(current.getValue());
-        final String nextValue = String.valueOf(nextBlock.getValue());
-        final String verifyNextBottom = String.valueOf(nextBlock.getDownBlock().getValue());
-        final String verifyNextUpper = String.valueOf(nextBlock.getUpBlock().getValue());
-        if (PathBlocksEnum.HORIZONTAL_WAY.getValue().equals(currentValue) && PathBlocksEnum.TURN_LEFT_WAY.getValue().equals(nextValue)) {
+        final String currentValue = getCharNodeValue(current);
+        getCharNodeValue(current.getUpBlock());
+        getCharNodeValue(current.getDownBlock());
+        getCharNodeValue(current.getLeftBlock());
+        getCharNodeValue(current.getRightBlock());
+
+        final String nextValue = getCharNodeValue(nextBlock);
+        getCharNodeValue(nextBlock.getUpBlock());
+        final String nextDownValue = getCharNodeValue(nextBlock.getDownBlock());
+        final String nextLeftValue = getCharNodeValue(nextBlock.getLeftBlock());
+        final String nextRightValue = getCharNodeValue(nextBlock.getRightBlock());
+
+        if (isHorizontal(currentValue) && isLeft(nextValue)) {
+            saveCorner(nextBlock);
             return nextBlock.getUpBlock();
         }
-        if (PathBlocksEnum.HORIZONTAL_WAY.getValue().equals(currentValue) && PathBlocksEnum.TURN_RIGHT_WAY.getValue().equals(nextValue)) {
+        if (isHorizontal(currentValue) && isRight(nextValue)) {
+            saveCorner(nextBlock);
             return nextBlock.getDownBlock();
         }
-        if (PathBlocksEnum.TURN_RIGHT_WAY.getValue().equals(currentValue)) {
-            if (PathBlocksEnum.VERTICAL_WAY.getValue().equals(nextValue) && !PathBlocksEnum.VERTICAL_WAY.getValue().equals(verifyNextBottom)) {
+        if (isNumeric(currentValue) || isVertical(currentValue) && isLeft(nextValue)) {
+            saveCorner(nextBlock);
+            return nextBlock.getLeftBlock();
+        }
+        if (isNumeric(currentValue) || isVertical(currentValue) && isRight(nextValue)) {
+            saveCorner(nextBlock);
+            return nextBlock.getRightBlock();
+        }
+        if (isContinueDown(nextValue) && !isRight(nextRightValue) && !isLeft(nextLeftValue)) {
+            return nextBlock.getDownBlock();
+        }
+
+        if (isRight(currentValue)) {
+            if (isVertical(nextValue) && !isVertical(nextDownValue)) {
                 return nextBlock.getRightBlock().getRightBlock();
-            } else if (PathBlocksEnum.HORIZONTAL_WAY.getValue().equals(nextValue)) {
+            } else if (isHorizontal(nextValue)) {
                 return nextBlock.getRightBlock();
             }
         }
-        if (PathBlocksEnum.VERTICAL_WAY.getValue().equals(currentValue) && PathBlocksEnum.TURN_LEFT_WAY.getValue().equals(nextValue)) {
-            return nextBlock.getLeftBlock();
-        }
-        if (PathBlocksEnum.VERTICAL_WAY.getValue().equals(currentValue) && PathBlocksEnum.TURN_RIGHT_WAY.getValue().equals(nextValue)) {
-            return nextBlock.getRightBlock();
-        }
-
         return null;
+    }
+
+    private static String getCharNodeValue(Node current) {
+        return String.valueOf(current.getValue());
+    }
+
+    private static boolean isNumeric(String currentValue) {
+        return StringUtils.isNumeric(currentValue);
+    }
+
+    private void saveCorner(final Node corner) {
+        pathMap.addCorner(corner);
+    }
+
+    private boolean isContinueDown(final String nextValue) {
+        return isNumeric(nextValue) || isVertical(nextValue);
+    }
+
+    private static boolean isVertical(final String value) {
+        return PathBlocksEnum.VERTICAL_WAY.getValue().equals(value);
+    }
+
+    private static boolean isRight(final String value) {
+        return PathBlocksEnum.TURN_RIGHT_WAY.getValue().equals(value);
+    }
+
+    private static boolean isLeft(final String value) {
+        return PathBlocksEnum.TURN_LEFT_WAY.getValue().equals(value);
+    }
+
+    private static boolean isHorizontal(final String value) {
+        return PathBlocksEnum.HORIZONTAL_WAY.getValue().equals(value);
     }
 
     private int checkIsBillOnAPath(final char element) {
         String value = String.valueOf(element);
-        return StringUtils.isNumeric(value) ? Integer.parseInt(value) : -1;
+        return isNumeric(value) ? Integer.parseInt(value) : -1;
     }
 
     private boolean isPathBlock(final char element) {
         final String value = String.valueOf(element);
-        if (PathBlocksEnum.HORIZONTAL_WAY.getValue().equals(value)) {
+        if (isHorizontal(value)) {
             return true;
         }
-        if (PathBlocksEnum.TURN_LEFT_WAY.getValue().equals(value)) {
+        if (isLeft(value)) {
             return true;
         }
-        if (PathBlocksEnum.TURN_RIGHT_WAY.getValue().equals(value)) {
+        if (isRight(value)) {
             return true;
         }
-        if (PathBlocksEnum.VERTICAL_WAY.getValue().equals(value)) {
+        if (isVertical(value)) {
             return true;
         } else {
             if (checkIsBillOnAPath(element) != -1) {
@@ -105,7 +231,7 @@ public class ProcessorMap {
 
     private Node getFirstBlock(final PathGraph pathGraph) {
         for(Node[] node : pathGraph.getGrid()) {
-            if(PathBlocksEnum.HORIZONTAL_WAY.getValue().equals(String.valueOf(node[0].getValue()))) {
+            if(isHorizontal(String.valueOf(node[0].getValue()))) {
                 char firstBlock = node[0].getValue();
                 Logger.getAnonymousLogger().info("First block of map founded: " + firstBlock + " at row: " + node[0].getRow());
                 return node[0];

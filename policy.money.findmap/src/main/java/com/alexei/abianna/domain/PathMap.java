@@ -7,6 +7,7 @@ public class PathMap {
 
     private List<Integer> bills = new ArrayList<>();
     private List<Character> pathMapRecorded = new ArrayList<>();
+    private List<Node> cornerList = new ArrayList<>();
 
     public int getAmountBills() {
         return this.bills.stream().mapToInt(Integer::intValue).sum();
@@ -26,5 +27,13 @@ public class PathMap {
 
     public void addBlockToMap(final char block) {
         this.pathMapRecorded.add(block);
+    }
+
+    public void addCorner(final Node corner) {
+        this.cornerList.add(corner);
+    }
+
+    public List<Node> getCornerList() {
+        return cornerList;
     }
 }
