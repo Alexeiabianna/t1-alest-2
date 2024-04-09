@@ -4,7 +4,8 @@ public enum PathBlocksEnum {
     HORIZONTAL_WAY("-"),
     VERTICAL_WAY("|"),
     TURN_LEFT_WAY("/"),
-    TURN_RIGHT_WAY("\\");
+    TURN_RIGHT_WAY("\\"),
+    FINAL_PATH("#");
 
     private String value;
 

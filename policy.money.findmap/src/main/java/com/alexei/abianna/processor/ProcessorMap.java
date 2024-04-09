@@ -56,6 +56,7 @@ public class ProcessorMap {
         int nextCol = next.getCol();
         int nextRow = next.getRow();
 
+        //Store that last corner
         if (isCorner(current)) {
             saveCorner(current);
         }
@@ -83,27 +84,29 @@ public class ProcessorMap {
                 //Horizontal way
                 if (isHorizontal(getCharNodeValue(next))) {
                     if (isLeft(getCharNodeValue(corner))) {
-                        return next.getLeftBlock();
+                        return isVertical(getCharNodeValue(next.getLeftBlock())) ? next.getLeftBlock().getLeftBlock() : next.getLeftBlock();
                     }
                     if (isRight(getCharNodeValue(corner))) {
-                        return next.getRightBlock();
+                        return isVertical(getCharNodeValue(next.getRightBlock())) ? next.getRightBlock().getRightBlock() : next.getRightBlock();
                     }
                 }
 
                 //Vertical way
                 if (isVertical(getCharNodeValue(next))) {
-                    if (isPipeOnPath(next)) {
-                        if (isLeft(getCharNodeValue(corner))) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        if (isHorizontal(getCharNodeValue(next.getLeftBlock()))) {
                             return next.getLeftBlock();
                         }
-                        if (isRight(getCharNodeValue(corner))) {
-                            return next.getRightBlock();
-                        }
-                    }
-                    if (isLeft(getCharNodeValue(corner))) {
                         return next.getUpBlock();
                     }
                     if (isRight(getCharNodeValue(corner))) {
+                        if (isHorizontal(getCharNodeValue(next.getRightBlock()))) {
+                            return next.getRightBlock();
+                        }
+                        if (isVertical(getCharNodeValue(next.getRightBlock()))) {
+                            return next.getRightBlock().getRightBlock();
+                        }
+
                         return next.getDownBlock();
                     }
                 }
@@ -112,10 +115,10 @@ public class ProcessorMap {
                 //When have a cross lines
                 if (isPipeOnPath(next)) {
                     if (isLeft(getCharNodeValue(corner))) {
-                        return next.getUpBlock();
+                        return next.getLeftBlock();
                     }
                     if (isRight(getCharNodeValue(corner))) {
-                        return next.getDownBlock();
+                        return next.getRightBlock();
                     }
                 }
                 if (isHiphenOnPath(next)) {
@@ -130,29 +133,22 @@ public class ProcessorMap {
                 //Numeric in column
                 if (isNumeric(getCharNodeValue(next))) {
                     if (isLeft(getCharNodeValue(corner))) {
-                        return next.getUpBlock();
-                    }
-                    if (isRight(getCharNodeValue(corner))) {
-                        return next.getDownBlock();
-                    }
-                    if (isLeft(getCharNodeValue(corner))) {
                         if (isHorizontal(getCharNodeValue(next))) {
-                            return next.getUpBlock();
+                            return next.getLeftBlock();
                         }
-                    }
-                    if (isRight(getCharNodeValue(corner))) {
-                        if (isHorizontal(getCharNodeValue(next)))
-                            return next.getDownBlock();
-                    }
-                    //Numeric inline
-                    if (isLeft(getCharNodeValue(corner))) {
                         if (isVertical(getCharNodeValue(next))) {
                             return next.getUpBlock();
                         }
+                        return next.getUpBlock();
                     }
                     if (isRight(getCharNodeValue(corner))) {
-                        if (isVertical(getCharNodeValue(next)))
+                        if (isHorizontal(getCharNodeValue(next))) {
+                            return next.getRightBlock();
+                        }
+                        if (isVertical(getCharNodeValue(next))) {
                             return next.getDownBlock();
+                        }
+                        return next.getDownBlock();
                     }
                 }
 
