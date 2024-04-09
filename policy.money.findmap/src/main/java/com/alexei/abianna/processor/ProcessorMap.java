@@ -80,6 +80,7 @@ public class ProcessorMap {
 
             // Go ahead
             if (Objects.nonNull(corner)) {
+                //Horizontal way
                 if (isHorizontal(getCharNodeValue(next))) {
                     if (isLeft(getCharNodeValue(corner))) {
                         return next.getLeftBlock();
@@ -87,17 +88,46 @@ public class ProcessorMap {
                     if (isRight(getCharNodeValue(corner))) {
                         return next.getRightBlock();
                     }
-                    if (isLeft(getCharNodeValue(corner))) {
-                        if (isPipe(getCharNodeValue(next))) {
+                }
+
+                //Vertical way
+                if (isVertical(getCharNodeValue(next))) {
+                    if (isPipeOnPath(next)) {
+                        if (isLeft(getCharNodeValue(corner))) {
+                            return next.getLeftBlock();
+                        }
+                        if (isRight(getCharNodeValue(corner))) {
                             return next.getRightBlock();
                         }
+                    }
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getUpBlock();
                     }
                     if (isRight(getCharNodeValue(corner))) {
-                        if (isPipe(getCharNodeValue(next))) {
-                            return next.getRightBlock();
-                        }
+                        return next.getDownBlock();
                     }
                 }
+
+
+                //When have a cross lines
+                if (isPipeOnPath(next)) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getUpBlock();
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        return next.getDownBlock();
+                    }
+                }
+                if (isHiphenOnPath(next)) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getLeftBlock();
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        return next.getRightBlock();
+                    }
+                }
+
+                //Numeric in column
                 if (isNumeric(getCharNodeValue(next))) {
                     if (isLeft(getCharNodeValue(corner))) {
                         return next.getUpBlock();
@@ -105,13 +135,37 @@ public class ProcessorMap {
                     if (isRight(getCharNodeValue(corner))) {
                         return next.getDownBlock();
                     }
-                }
-                if (isVertical(getCharNodeValue(next))) {
                     if (isLeft(getCharNodeValue(corner))) {
-                        return next.getUpBlock();
+                        if (isHorizontal(getCharNodeValue(next))) {
+                            return next.getUpBlock();
+                        }
                     }
                     if (isRight(getCharNodeValue(corner))) {
-                        return next.getDownBlock();
+                        if (isHorizontal(getCharNodeValue(next)))
+                            return next.getDownBlock();
+                    }
+                    //Numeric inline
+                    if (isLeft(getCharNodeValue(corner))) {
+                        if (isVertical(getCharNodeValue(next))) {
+                            return next.getUpBlock();
+                        }
+                    }
+                    if (isRight(getCharNodeValue(corner))) {
+                        if (isVertical(getCharNodeValue(next)))
+                            return next.getDownBlock();
+                    }
+                }
+
+                //Numeric turn Left
+                if (isNumeric(getCharNodeValue(current)) && isLeft(getCharNodeValue(next))) {
+                    if (isLeft(getCharNodeValue(corner))) {
+                        return next.getLeftBlock();
+                    }
+                }
+                //Numeric turn Right
+                if (isNumeric(getCharNodeValue(current)) && isRight(getCharNodeValue(next))) {
+                    if (isRight(getCharNodeValue(corner))) {
+                        return next.getRightBlock();
                     }
                 }
             }
@@ -121,6 +175,18 @@ public class ProcessorMap {
 
     private boolean isPipe(final String value) {
         return PathBlocksEnum.VERTICAL_WAY.getValue().equals(value);
+    }
+    private boolean isPipeOnPath(final Node node) {
+        return isHorizontal(getCharNodeValue(node.getLeftBlock())) ||
+                isNumeric(getCharNodeValue(node.getLeftBlock())) ||
+                isNumeric(getCharNodeValue(node.getRightBlock())) ||
+                isHorizontal(getCharNodeValue(node.getRightBlock())) && isVertical(getCharNodeValue(node));
+    }
+    private boolean isHiphenOnPath(final Node node) {
+        return isVertical(getCharNodeValue(node.getLeftBlock())) ||
+                isNumeric(getCharNodeValue(node.getLeftBlock())) ||
+                isNumeric(getCharNodeValue(node.getRightBlock())) ||
+                isVertical(getCharNodeValue(node.getRightBlock())) && isHorizontal(getCharNodeValue(node));
     }
 
     private boolean isCorner(Node node) {
