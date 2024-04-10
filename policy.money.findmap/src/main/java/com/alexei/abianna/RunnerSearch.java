@@ -16,8 +16,8 @@ public class RunnerSearch {
     private static final String CASE_2000 = "src/main/resources/casosdeteste/casoC2000.txt";
 
     public static void main(String[] args) {
-        run(CASE_50);
-//        run(CASE_100);
+//        run(CASE_50);
+        run(CASE_100);
 //        run(CASE_200);
 //        run(CASE_500);
 //        run(CASE_750);
