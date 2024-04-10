@@ -30,3 +30,6 @@ e isso ocorre quando encontramos na primeira coluna o char "-"
     - A uma exceção a regra das posições, por exemplo:
         - Se o nodo não possui nenhum vizinho em alguma direção (no caso da primeira e a ultima coluna, e a última linha)
         - Deve-se considerar a posição da lista de vizinhos para a direita na posição 2 da lista;
+
+- \ desce e vai para direita
+- / sobe e vai para esquerda
